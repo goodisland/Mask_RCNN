@@ -1,3 +1,112 @@
+# Share problem during installation
+
+- python 3.4 is not supported current anaconda(version 22.9.0, 2022/11/12).
+
+- you can check what python version can installed in your anaconda with command below.
+
+`conda search "^python$"`
+
+---
+
+- Tried python 3.5 which already installed in my anaconda enviroment.
+
+- Ran `pip install -r requirements.txt`, but below error message was occured.
+
+`protobuf requires Python '>=3.7' but the running Python is 3.5.6`
+
+- Recreate anaconda enviroment in python 3.7
+
+```
+conda remove -n mask_rcnn --all -y
+conda create -n mask_rcnn python=3.7 -y
+conda activate mask_rcnn
+pip install -r requirements.txt
+```
+
+- Error was occured
+
+```
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+~\AppData\Local\Temp\ipykernel_32636\1588948940.py in <module>
+     14 sys.path.append(ROOT_DIR)  # To find local version of the library
+     15 from mrcnn import utils
+---> 16 import mrcnn.model as modellib
+     17 from mrcnn import visualize
+     18 # Import COCO config
+
+c:\Users\island\anaconda3\envs\mask_rcnn\lib\importlib\_bootstrap.py in _find_and_load(name, import_)
+
+c:\Users\island\anaconda3\envs\mask_rcnn\lib\importlib\_bootstrap.py in _find_and_load_unlocked(name, import_)
+
+c:\Users\island\anaconda3\envs\mask_rcnn\lib\importlib\_bootstrap.py in _load_unlocked(spec)
+
+c:\Users\island\anaconda3\envs\mask_rcnn\lib\importlib\_bootstrap.py in _load_backward_compatible(spec)
+
+c:\Users\island\anaconda3\envs\mask_rcnn\lib\site-packages\mask_rcnn-2.1-py3.7.egg\mrcnn\model.py in <module>
+    253 
+    254 
+--> 255 class ProposalLayer(KE.Layer):
+    256     """Receives anchor scores and selects a subset to pass as proposals
+    257     to the second stage. Filtering is done based on anchor scores and
+
+AttributeError: module 'keras.engine' has no attribute 'Layer'
+```
+
+These command solved that error.
+
+```
+pip uninstall keras -y
+pip uninstall keras-nightly -y
+pip uninstall keras-Preprocessing -y
+pip uninstall keras-vis -y
+pip uninstall tensorflow -y
+pip uninstall h5py -y
+```
+
+```
+pip install tensorflow==1.13.1
+pip install keras==2.0.8
+pip install h5py==2.10.0
+```
+
+ref) https://stackoverflow.com/questions/67905185/module-keras-engine-has-no-attribute-layer
+
+- Another Error was occured 
+
+```
+---------------------------------------------------------------------------
+ModuleNotFoundError                       Traceback (most recent call last)
+~\AppData\Local\Temp\ipykernel_32304\1588948940.py in <module>
+     18 # Import COCO config
+     19 sys.path.append(os.path.join(ROOT_DIR, "samples/coco/"))  # To find local version
+---> 20 import coco
+     21 
+     22 get_ipython().run_line_magic('matplotlib', 'inline')
+
+d:\git\Mask_RCNN\samples/coco\coco.py in <module>
+     40 # If the PR is merged then use the original repo.
+     41 # Note: Edit PythonAPI/Makefile and replace "python" with "python3".
+---> 42 from pycocotools.coco import COCO
+     43 from pycocotools.cocoeval import COCOeval
+     44 from pycocotools import mask as maskUtils
+
+ModuleNotFoundError: No module named 'pycocotools'
+```
+
+To solve it, install pycocotools in below.
+
+`pip install git+https://github.com/philferriere/cocoapi.git#subdirectory=PythonAPI`
+
+### Filnally, it worked!
+please refer to [demo.ipynb](samples/demo.ipynb)
+
+![](samples/demo_Mask-RCNN.png)
+
+---
+
+<details><summary>View original README.md</summary><div>
+
 # Mask R-CNN for Object Detection and Segmentation
 
 This is an implementation of [Mask R-CNN](https://arxiv.org/abs/1703.06870) on Python 3, Keras, and TensorFlow. The model generates bounding boxes and segmentation masks for each instance of an object in the image. It's based on Feature Pyramid Network (FPN) and a ResNet101 backbone.
@@ -239,3 +348,4 @@ A computer vision class project by HU Shiyu to apply the color pop effect on peo
 
 ### [GRASS GIS Addon](https://github.com/ctu-geoforall-lab/i.ann.maskrcnn) to generate vector masks from geospatial imagery. Based on a [Master's thesis](https://github.com/ctu-geoforall-lab-projects/dp-pesek-2018) by Ondřej Pešek.
 ![GRASS GIS Image](assets/project_grass_gis.png)
+</div></details>
