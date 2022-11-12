@@ -246,7 +246,7 @@ A computer vision class project by HU Shiyu to apply the color pop effect on peo
 
 ---
 
-# Share problem during installation
+# Share problem during installation by Ryo Shimada
 
 ## background
 
